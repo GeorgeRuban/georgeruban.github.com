@@ -90,6 +90,7 @@
               cells[current.row][current.col] + 1) {
             setValue(neighbors[i].row, neighbors[i].col, 
                      cells[current.row][current.col] + 1);
+            unvisited.push(neighbors[i]);
           }
         }
       }
