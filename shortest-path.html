@@ -28,7 +28,7 @@ function createBoard() {
     var cellRow = [];
     for (var col = 0; col < width; ++col) {
       var td = document.createElement('td');
-      td.textContent = '&#x221e;'; // Infinity symbol.
+      td.textContent = '\u221e'; // Infinity symbol.
       tr.appendChild(td);
       cellRow.push(Number.MAX_VALUE);
     }
