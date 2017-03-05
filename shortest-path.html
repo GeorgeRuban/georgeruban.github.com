@@ -2,21 +2,25 @@
   <title>Shortest Path, JavaScript; George Ruban</title>
   <style>
 #board {
-  width: 90%;
-  height: 500px;
+  line-height: 12px;
 }
   </style>
   <script>
 
 /** The board to trace the path over. */
-var height = 50;
-var width = 50;
+var height = 30;
+var width = 60;
 /** Contains integers; distance from start, or negative values for special. */
 var cells;
 
 var IMPASSIBLE = -1;
 var START = -2;
 var END = -3;
+    
+var INFINITY_SYMBOL = '\u221e';
+var FULL_STAR_SYMBOL = '\u9733';
+var EMPTY_STAR_SYMBOL = '\u9734';
+var FULL_BLOCK_SYMBOL = '\u2588';
 
 /** Creates/clears the HTML table and matching cells array. */
 function createBoard() {
@@ -28,7 +32,21 @@ function createBoard() {
     var cellRow = [];
     for (var col = 0; col < width; ++col) {
       var td = document.createElement('td');
-      td.textContent = '\u221e'; // Infinity symbol.
+      td.textContent = INFINITY_SYMBOL;
+      td.id = row + ',' + col;
+      td.onclick = function() {
+        return function() {
+          var td = document.querySelector('#' + row + ',' + col);
+          if (cells[row][col] < 0) {
+            cells[row][col] = Number.MAX_VALUE;
+            td.textContent = INFINITY_SYMBOL;
+          } else {
+            cells[row][col] = IMPASSIBLE;
+            td.textContent = FULL_BLOCK_SYMBOL;
+          }
+        }
+      }();
+      
       tr.appendChild(td);
       cellRow.push(Number.MAX_VALUE);
     }
