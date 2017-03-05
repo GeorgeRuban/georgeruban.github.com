@@ -5,68 +5,113 @@
   line-height: 12px;
 }
   </style>
+  <script src="TinyQueue.js"></script>
   <script>
 
-/** The board to trace the path over. */
-var height = 30;
-var width = 60;
-/** Contains integers; distance from start, or negative values for special. */
-var cells;
+    /** The board to trace the path over. */
+    var height = 30;
+    var width = 60;
+    /** Contains integers; distance from start, or negative values for special. */
+    var cells;
+    var initialCol = 4;
+    var initialRow = 4;
 
-var IMPASSIBLE = -1;
-var START = -2;
-var END = -3;
-    
-var INFINITY_SYMBOL = '\u221e';
-var FULL_STAR_SYMBOL = '\u2605';
-var EMPTY_STAR_SYMBOL = '\u2729';
-var FULL_BLOCK_SYMBOL = '\u2588';
+    var IMPASSIBLE = -1;
+    var START = 0;
+    var END = -2;
 
-/** Creates/clears the HTML table and matching cells array. */
-function createBoard() {
-  var board = document.querySelector('#board');
-  var table = document.createElement('table');
-  cells = [];
-  for (var row = 0; row < height; ++row) {
-    var tr = document.createElement('tr');
-    var cellRow = [];
-    for (var col = 0; col < width; ++col) {
-      var td = document.createElement('td');
-      td.textContent = INFINITY_SYMBOL;
-      td.id = row + ':' + col;
-      td.onclick = onClickCell(td, row, col);
-      tr.appendChild(td);
-      cellRow.push(Number.MAX_VALUE);
+    var INFINITY_SYMBOL = '\u221e';
+    var FULL_STAR_SYMBOL = '\u2605';
+    var EMPTY_STAR_SYMBOL = '\u2729';
+    var FULL_BLOCK_SYMBOL = '\u2588';
+
+    /** Creates/clears the HTML table and matching cells array. */
+    function createBoard() {
+      var board = document.querySelector('#board');
+      var table = document.createElement('table');
+      cells = [];
+      for (var row = 0; row < height; ++row) {
+        var tr = document.createElement('tr');
+        var cellRow = [];
+        for (var col = 0; col < width; ++col) {
+          var td = document.createElement('td');
+          td.textContent = INFINITY_SYMBOL;
+          td.id = row + ':' + col;
+          td.onclick = onClickCell(td, row, col);
+          tr.appendChild(td);
+          cellRow.push(Number.MAX_VALUE);
+        }
+        cells.push(cellRow);
+        table.appendChild(tr);
+      }
+      board.appendChild(table);
+      
+      // Set start and end cells.
+      setValue(initialRow, initialCol, 0, EMPTY_STAR_SYMBOL);
+      setValue(height - 5, width - 5, END, FULL_STAR_SYMBOL);
     }
-    cells.push(cellRow);
-    table.appendChild(tr);
-  }
-  board.appendChild(table);
-  // Set start and end cells.
-  var td = document.getElementById('5:5');
-  td.textContent = EMPTY_STAR_SYMBOL;
-  td.onclick = null;
-  cells[5][5] = START;
-  
-  td = document.getElementById((height-5) + ':' + (width - 5));
-  td.textContent = FULL_STAR_SYMBOL;
-  td.onclick = null;
-  cells[height - 5][width - 5] = END;
-}
 
-/** Return onClick handler that toggles a cell from empty to block. */
-function onClickCell(td, row, col) {  
-  return function() {
-    if (cells[row][col] < 0) {
-      cells[row][col] = Number.MAX_VALUE;
-      td.textContent = INFINITY_SYMBOL;
-    } else {
-      cells[row][col] = IMPASSIBLE;
-      td.textContent = FULL_BLOCK_SYMBOL;
+    /** Return onClick handler that toggles a cell from empty to block. */
+    function onClickCell(td, row, col) {  
+      return function() {
+        if (cells[row][col] < 0) {
+          cells[row][col] = Number.MAX_VALUE;
+          td.textContent = INFINITY_SYMBOL;
+        } else {
+          cells[row][col] = IMPASSIBLE;
+          td.textContent = FULL_BLOCK_SYMBOL;
+        }
+      }
     }
-  }
-}
     
+    /** Return an array of {row, col, val} objects for cells neighboring the input. */
+    function getNeighbors(row, col) {
+      var array = [];
+      for (var i = row -1; i < row + 2; ++i) {
+        for (var j = col -1; i < col + 2; ++ j) {
+          if (i >= 0 && i < height && j >= 0 && j < width &&
+              (i != row || j != col) && cells[row][col] > 0) {
+            array.push(cellObject(row, col));
+          }
+        }
+      }
+      return array;
+    }
+    
+    function cellObject(row, col) {
+      return {row: row, col: col, val: cells[row][col]};
+    }
+    
+    function dijkstra() {
+      // Priority queue.
+      var unvisited = new TinyQueue([], function(a, b) {
+        return a.val - b.val});
+      for (var row = 0; row < height; ++row) {
+        for (var col = 0; col < width; ++col) {
+          unvisited.push(cellObject(row, col));
+        }
+      }
+      while(unvisited.length > 0) {
+        var current = unvisited.pop();
+        var neighbors = getNeighbors(current);
+        for (var i = 0; i < neighbors.length; ++i) {
+          if (neighbors[i].val > current.val + 1) {
+            setValue(neighbors[i].row, neighbors[i].col, val);
+          }
+        }
+      }
+    }
+    
+    /** Set the value of input cell. */
+    function setValue(row, col, val, symbol) {
+      if (!symbol) symbol = '' + val;
+      cells[row][col] = val;
+      var td = document.getElementById(initialRow + ':' + initialCol);
+      td.textContent = symbol;
+      if (val == START || val == END) {
+        td.onclick = null;
+      }
+    }
   </script>
 </head>
 <body onload="createBoard();">
