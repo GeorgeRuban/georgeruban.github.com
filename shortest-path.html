@@ -69,7 +69,7 @@
         for (var j = col -1; j < col + 2; ++j) {
           if (i >= 0 && i < height && j >= 0 && j < width &&
               (i != row || j != col) && cells[i][j] > 0) {
-            array.push(cellObject(row, col));
+            array.push(cellObject(i, j));
           }
         }
       }
