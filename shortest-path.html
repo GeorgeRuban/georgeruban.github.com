@@ -34,7 +34,7 @@ function createBoard() {
       var td = document.createElement('td');
       td.textContent = INFINITY_SYMBOL;
       td.id = row + ':' + col;
-      td.onclick = function() {
+      td.onclick = (function() {
         return function() {
           if (cells[row][col] < 0) {
             cells[row][col] = Number.MAX_VALUE;
@@ -44,7 +44,7 @@ function createBoard() {
             td.textContent = FULL_BLOCK_SYMBOL;
           }
         }
-      }();
+      })();
       
       tr.appendChild(td);
       cellRow.push(Number.MAX_VALUE);
