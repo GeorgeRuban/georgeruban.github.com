@@ -42,6 +42,16 @@ function createBoard() {
     table.appendChild(tr);
   }
   board.appendChild(table);
+  // Set start and end cells.
+  var td = document.querySelector('#5:5');
+  td.textContent = EMPTY_STAR_SYMBOL;
+  td.onclick = null;
+  cells[5][5] = START;
+  
+  td = document.querySelector('#' + (height-5) + ':' + (width - 5));
+  td.textContent = FULL_STAR_SYMBOL;
+  td.onclick = null;
+  cells[height - 5][width - 5] = END;
 }
 
 /** Return onClick handler that toggles a cell from empty to block. */
