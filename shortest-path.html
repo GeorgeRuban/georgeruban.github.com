@@ -34,18 +34,7 @@ function createBoard() {
       var td = document.createElement('td');
       td.textContent = INFINITY_SYMBOL;
       td.id = row + ':' + col;
-      td.onclick = (function() {
-        return function() {
-          if (cells[row][col] < 0) {
-            cells[row][col] = Number.MAX_VALUE;
-            td.textContent = INFINITY_SYMBOL;
-          } else {
-            cells[row][col] = IMPASSIBLE;
-            td.textContent = FULL_BLOCK_SYMBOL;
-          }
-        }
-      })();
-      
+      td.onclick = onClickCell(td, row, col);
       tr.appendChild(td);
       cellRow.push(Number.MAX_VALUE);
     }
@@ -54,7 +43,20 @@ function createBoard() {
   }
   board.appendChild(table);
 }
-  
+
+/** Return onClick handler that toggles a cell from empty to block. */
+function onClickCell(td, row, col) {  
+  return function() {
+    if (cells[row][col] < 0) {
+      cells[row][col] = Number.MAX_VALUE;
+      td.textContent = INFINITY_SYMBOL;
+    } else {
+      cells[row][col] = IMPASSIBLE;
+      td.textContent = FULL_BLOCK_SYMBOL;
+    }
+  }
+}
+    
   </script>
 </head>
 <body onload="createBoard();">
