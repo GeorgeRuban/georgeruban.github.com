@@ -43,12 +43,12 @@ function createBoard() {
   }
   board.appendChild(table);
   // Set start and end cells.
-  var td = document.querySelector('#5:5');
+  var td = document.getElementById('5:5');
   td.textContent = EMPTY_STAR_SYMBOL;
   td.onclick = null;
   cells[5][5] = START;
   
-  td = document.querySelector('#' + (height-5) + ':' + (width - 5));
+  td = document.getElementById((height-5) + ':' + (width - 5));
   td.textContent = FULL_STAR_SYMBOL;
   td.onclick = null;
   cells[height - 5][width - 5] = END;
@@ -70,9 +70,12 @@ function onClickCell(td, row, col) {
   </script>
 </head>
 <body onload="createBoard();">
-<h1>Shortest Path algorithm in JavaScript</h1>
-<h2>George Ruban</h2>
+  <h1>Shortest Path algorithm in JavaScript</h1>
+  <h2>George Ruban</h2>
 
-<div id="board"></div>
+  <div id="board"></div>
+  <button onclick="dijkstra();">Run Dijkstra's algorithm</button>
+  <button onclick="createBoard();">Reset board</button>
+  
 
 </body>
