@@ -96,7 +96,7 @@
         var neighbors = getNeighbors(current.row, current.col);
         for (var i = 0; i < neighbors.length; ++i) {
           if (neighbors[i].val > current.val + 1) {
-            setValue(neighbors[i].row, neighbors[i].col, val);
+            setValue(neighbors[i].row, neighbors[i].col, current.val + 1);
           }
         }
       }
