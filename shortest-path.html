@@ -33,10 +33,9 @@ function createBoard() {
     for (var col = 0; col < width; ++col) {
       var td = document.createElement('td');
       td.textContent = INFINITY_SYMBOL;
-      td.id = row + ',' + col;
+      td.id = row + ':' + col;
       td.onclick = function() {
         return function() {
-          var td = document.querySelector('#' + row + ',' + col);
           if (cells[row][col] < 0) {
             cells[row][col] = Number.MAX_VALUE;
             td.textContent = INFINITY_SYMBOL;
