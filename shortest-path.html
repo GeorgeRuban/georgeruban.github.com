@@ -5,7 +5,6 @@
   line-height: 12px;
 }
   </style>
-  <script src="TinyQueue.js"></script>
   <script>
 
     /** The board to trace the path over. */
@@ -78,26 +77,19 @@
     }
     
     function cellObject(row, col) {
-      return {row: row, col: col, val: cells[row][col]};
+      return {row: row, col: col};
     }
     
     function dijkstra() {
-      // Priority queue.
-      var unvisited = new TinyQueue([], function(a, b) {
-        return a.val - b.val});
-      for (var row = 0; row < height; ++row) {
-        for (var col = 0; col < width; ++col) {
-          if (cells[row][col] >= 0) {
-            unvisited.push(cellObject(row, col));
-          }
-        }
-      }
+      var unvisited = [cellObject(initialRow, initialCol)];
       while(unvisited.length > 0) {
         var current = unvisited.pop();
         var neighbors = getNeighbors(current.row, current.col);
         for (var i = 0; i < neighbors.length; ++i) {
-          if (neighbors[i].val > current.val + 1) {
-            setValue(neighbors[i].row, neighbors[i].col, current.val + 1);
+          if (cells[neighbors[i].row][neighbors[i].col] > 
+              cells[current.row][current.col] + 1) {
+            setValue(neighbors[i].row, neighbors[i].col, 
+                     cells[current.row][current.col] + 1);
           }
         }
       }
