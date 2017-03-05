@@ -66,7 +66,7 @@
     function getNeighbors(row, col) {
       var array = [];
       for (var i = row -1; i < row + 2; ++i) {
-        for (var j = col -1; i < col + 2; ++ j) {
+        for (var j = col -1; j < col + 2; ++j) {
           if (i >= 0 && i < height && j >= 0 && j < width &&
               (i != row || j != col) && cells[row][col] > 0) {
             array.push(cellObject(row, col));
