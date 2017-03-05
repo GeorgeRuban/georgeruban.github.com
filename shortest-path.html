@@ -26,6 +26,7 @@
     /** Creates/clears the HTML table and matching cells array. */
     function createBoard() {
       var board = document.querySelector('#board');
+      board.innerHTML = '';
       var table = document.createElement('table');
       cells = [];
       for (var row = 0; row < height; ++row) {
@@ -105,7 +106,7 @@
     /** Set the value of input cell. */
     function setValue(row, col, val, symbol) {
       cells[row][col] = val;
-      var td = document.getElementById(initialRow + ':' + initialCol);
+      var td = document.getElementById(row + ':' + col);
       if (symbol) {
         td.onclick = null;
       } else {
