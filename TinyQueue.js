@@ -1,8 +1,8 @@
 /** TinyQueue.js - smallest implementation of priority queue, from
   * https://github.com/mourner/tinyqueue/blob/master/index.js. */
-  'use strict';
+//  'use strict';
 
-module.exports = TinyQueue;
+// module.exports = TinyQueue;
 
 function TinyQueue(data, compare) {
     if (!(this instanceof TinyQueue)) return new TinyQueue(data, compare);
