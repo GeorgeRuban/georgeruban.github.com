@@ -82,16 +82,16 @@ td {
       }*/
       // Orthogonal only
       if (row > 0 && cells[row - 1][col] >= 0) {
-        array.push(cellObject(row - 1, col);
+        array.push(cellObject(row - 1, col));
       }
       if (col > 0 && cells[row][col - 1] >= 0) {
-        array.push(cellObject(row, col - 1);
+        array.push(cellObject(row, col - 1));
       }
       if (row < height - 1 && cells[row + 1][col] >= 0) {
-        array.push(cellObject(row + 1, col);
+        array.push(cellObject(row + 1, col));
       }
       if (col < width - 1 && cells[row][col + 1] >= 0) {
-        array.push(cellObject(row, col + 1);
+        array.push(cellObject(row, col + 1));
       }
       return array;
     }
