@@ -31,7 +31,7 @@ td {
     /** Creates/clears the HTML table and matching cells array. */
     function createBoard() {
       height = document.querySelector('#height').value;
-      width = document.querySelector('#height').value;
+      width = document.querySelector('#width').value;
       goalRow = height - 2;
       goalCol = width - 2;
       
@@ -180,7 +180,7 @@ td {
   <div id="board"></div>
   <button onclick="dijkstra();">Run Dijkstra's algorithm</button>
   Width: <input type="number" min="5" id="width" value="50"> 
-  Height: <input type="number" min="5" id="height" value="30">
+  Height: <input type="number" min="5" id="height" value="25">
   <button onclick="createBoard();">Reset board</button>
   
 
