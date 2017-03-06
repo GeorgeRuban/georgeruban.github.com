@@ -50,9 +50,19 @@ td {
       }
       board.appendChild(table);
       
+      // Add two columns of block cells to make it interesting.
+      col = Math.floor(initialCol + (goalCol - initialCol) / 3);
+      for (row = Math.floor(height * 2 / 3); row >= 0; row--) {
+        setValue(row, col, IMPASSIBLE, FULL_BLOCK_SYMBOL);
+      }
+      col = Math.floor(initialCol + (goalCol - initialCol) * 2 / 3);
+      for (row = Math.floor(height / 3); row < height; row++) {
+        setValue(row, col, IMPASSIBLE, FULL_BLOCK_SYMBOL);
+      }
+      
       // Set start and end cells.
-      setValue(initialRow, initialCol, 0, EMPTY_STAR_SYMBOL);
-      setValue(goalRow, goalCol, Number.MAX_VALUE, FULL_STAR_SYMBOL);
+      setValue(initialRow, initialCol, 0, EMPTY_STAR_SYMBOL, true);
+      setValue(goalRow, goalCol, Number.MAX_VALUE, FULL_STAR_SYMBOL, true);
     }
 
     /** Return onClick handler that toggles a cell from empty to block. */
@@ -140,12 +150,13 @@ td {
     
     
     /** Set the value of input cell. */
-    function setValue(row, col, val, symbol) {
+    function setValue(row, col, val, symbol, noClick) {
       cells[row][col] = val;
       var td = document.getElementById(row + ':' + col);
-      if (symbol) {
+      if (noClick) {
         td.onclick = null;
-      } else {
+      } 
+      if (!symbol) {
         symbol = '' + val;
       }
       td.textContent = symbol;
@@ -155,6 +166,8 @@ td {
 <body onload="createBoard();">
   <h1>Shortest Path algorithm in JavaScript</h1>
   <h2>George Ruban</h2>
+  
+  Click on the board to add or remove obstacles between the start and end stars.
 
   <div id="board"></div>
   <button onclick="dijkstra();">Run Dijkstra's algorithm</button>
