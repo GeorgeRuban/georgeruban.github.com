@@ -14,6 +14,8 @@
     var cells;
     var initialCol = 4;
     var initialRow = 4;
+    var goalRow = height - 5;
+    var goalCol = width - 5;
 
     var IMPASSIBLE = -1;
 
@@ -46,7 +48,7 @@
       
       // Set start and end cells.
       setValue(initialRow, initialCol, 0, EMPTY_STAR_SYMBOL);
-      setValue(height - 5, width - 5, Number.MAX_VALUE, FULL_STAR_SYMBOL);
+      setValue(goalRow, goalCol, Number.MAX_VALUE, FULL_STAR_SYMBOL);
     }
 
     /** Return onClick handler that toggles a cell from empty to block. */
@@ -86,11 +88,28 @@
         var current = unvisited.pop();
         var neighbors = getNeighbors(current.row, current.col);
         for (var i = 0; i < neighbors.length; ++i) {
-          if (cells[neighbors[i].row][neighbors[i].col] > 
-              cells[current.row][current.col] + 1) {
-            setValue(neighbors[i].row, neighbors[i].col, 
-                     cells[current.row][current.col] + 1);
-            unvisited.push(neighbors[i]);
+          var n = neighbors[i];
+          if (cells[n.row][n.col] > cells[current.row][current.col] + 1) {
+            setValue(n.row, n.col, cells[current.row][current.col] + 1);
+            unvisited.push(n);
+            if (n.row == goalRow && n.col == goalCol) {
+              break;
+            }
+          }
+        }
+      }
+      // Trace back
+      if (cells[goalRow][goalCol] < Number.MAX_VALUE) {
+        var current = cellObject(goalRow, goalCol);
+        while (current.row != initalRow || current.col != initialCol) {
+          var td = document.getElementById(current.row + ':' + current.col);
+          td.style.backgroundColor = 'lightblue';
+          var neighbors = getNeighbors(current.row, current.col);
+          for (var i = 0; i < neighbors.length; ++i) {
+            var n = neighbors[i];
+            if (cells[n.row][n.col] < cells[current.row][current.col]) {
+              current = n;
+            }
           }
         }
       }
