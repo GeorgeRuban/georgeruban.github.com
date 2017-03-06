@@ -91,7 +91,7 @@
     
     function dijkstraCallback() {
       if(unvisited.length > 0) {
-        var current = unvisited.pop();
+        var current = unvisited.shift();
         var neighbors = getNeighbors(current.row, current.col);
         for (var i = 0; i < neighbors.length; ++i) {
           var n = neighbors[i];
@@ -100,7 +100,7 @@
             unvisited.push(n);
           }
         }
-        setTimeout(dijkstraCallback, 50);
+        setTimeout(dijkstraCallback, 10);
         return;
       }
       // Trace back
