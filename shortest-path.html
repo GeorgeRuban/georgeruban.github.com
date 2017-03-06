@@ -101,7 +101,7 @@
       // Trace back
       if (cells[goalRow][goalCol] < Number.MAX_VALUE) {
         var current = cellObject(goalRow, goalCol);
-        while (current.row != initalRow || current.col != initialCol) {
+        while (current.row != initialRow || current.col != initialCol) {
           var td = document.getElementById(current.row + ':' + current.col);
           td.style.backgroundColor = 'lightblue';
           var neighbors = getNeighbors(current.row, current.col);
