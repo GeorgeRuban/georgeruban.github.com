@@ -12,14 +12,14 @@ td {
   <script>
 
     /** The board to trace the path over. */
-    var height = 30;
-    var width = 60;
+    var height;
+    var width;
     /** Contains integers; distance from start, or negative values for special. */
     var cells;
-    var initialCol = 4;
-    var initialRow = 4;
-    var goalRow = height - 5;
-    var goalCol = width - 5;
+    var initialCol = 2;
+    var initialRow = 2;
+    var goalRow;
+    var goalCol;
 
     var IMPASSIBLE = -1;
 
@@ -30,6 +30,11 @@ td {
 
     /** Creates/clears the HTML table and matching cells array. */
     function createBoard() {
+      height = document.querySelector('#height').value;
+      width = document.querySelector('#height').value;
+      goalRow = height - 2;
+      goalCol = width - 2;
+      
       var board = document.querySelector('#board');
       board.innerHTML = '';
       var table = document.createElement('table');
@@ -167,10 +172,15 @@ td {
   <h1>Shortest Path algorithm in JavaScript</h1>
   <h2>George Ruban</h2>
   
+  <p>
   Click on the board to add or remove obstacles between the start and end stars.
-
+  Then run Dijkstra's Algorithm.
+  </p>
+  
   <div id="board"></div>
   <button onclick="dijkstra();">Run Dijkstra's algorithm</button>
+  Width: <input type="number" min="5" id="width" value="50"> 
+  Height: <input type="number" min="5" id="height" value="30">
   <button onclick="createBoard();">Reset board</button>
   
 
