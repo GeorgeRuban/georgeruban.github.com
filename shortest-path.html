@@ -2,7 +2,11 @@
   <title>Shortest Path, JavaScript; George Ruban</title>
   <style>
 #board {
-  line-height: 12px;
+  line-height: 10px;
+}
+td {
+  width: 16px;
+  height: 16px;
 }
   </style>
   <script>
@@ -90,7 +94,7 @@
     var unvisited = [];
     
     function dijkstraCallback() {
-      if(unvisited.length > 0) {
+      if(unvisited.length > 0 && cells[goalRow][goalCol] == Number.MAX_VALUE) {
         var current = unvisited.shift();
         var neighbors = getNeighbors(current.row, current.col);
         for (var i = 0; i < neighbors.length; ++i) {
@@ -108,7 +112,7 @@
         var current = cellObject(goalRow, goalCol);
         while (current.row != initialRow || current.col != initialCol) {
           var td = document.getElementById(current.row + ':' + current.col);
-          td.style.backgroundColor = 'lightblue';
+          td.style.backgroundColor = 'red';
           var neighbors = getNeighbors(current.row, current.col);
           for (var i = 0; i < neighbors.length; ++i) {
             var n = neighbors[i];
