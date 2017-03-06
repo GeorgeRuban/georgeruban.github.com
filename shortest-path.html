@@ -70,7 +70,7 @@
       for (var i = row -1; i < row + 2; ++i) {
         for (var j = col -1; j < col + 2; ++j) {
           if (i >= 0 && i < height && j >= 0 && j < width &&
-              (i != row || j != col) && cells[i][j] > 0) {
+              (i != row || j != col) && cells[i][j] >= 0) {
             array.push(cellObject(i, j));
           }
         }
@@ -83,8 +83,14 @@
     }
     
     function dijkstra() {
-      var unvisited = [cellObject(initialRow, initialCol)];
-      while(unvisited.length > 0 && cells[goalRow][goalCol] == Number.MAX_VALUE) {
+      unvisited.push(cellObject(initialRow, initialCol));
+      dijkstraCallback();
+    }
+    
+    var unvisited = [];
+    
+    function dijkstraCallback() {
+      if(unvisited.length > 0) {
         var current = unvisited.pop();
         var neighbors = getNeighbors(current.row, current.col);
         for (var i = 0; i < neighbors.length; ++i) {
@@ -94,6 +100,8 @@
             unvisited.push(n);
           }
         }
+        setTimeout(dijkstraCallback, 50);
+        return;
       }
       // Trace back
       if (cells[goalRow][goalCol] < Number.MAX_VALUE) {
@@ -111,6 +119,7 @@
         }
       }
     }
+    
     
     /** Set the value of input cell. */
     function setValue(row, col, val, symbol) {
