@@ -84,7 +84,7 @@
     
     function dijkstra() {
       var unvisited = [cellObject(initialRow, initialCol)];
-      while(unvisited.length > 0) {
+      while(unvisited.length > 0 && cells[goalRow][goalCol] == Number.MAX_VALUE) {
         var current = unvisited.pop();
         var neighbors = getNeighbors(current.row, current.col);
         for (var i = 0; i < neighbors.length; ++i) {
@@ -92,9 +92,6 @@
           if (cells[n.row][n.col] > cells[current.row][current.col] + 1) {
             setValue(n.row, n.col, cells[current.row][current.col] + 1);
             unvisited.push(n);
-            if (n.row == goalRow && n.col == goalCol) {
-              break;
-            }
           }
         }
       }
