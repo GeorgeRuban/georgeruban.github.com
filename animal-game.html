@@ -2,15 +2,15 @@
   <script src="https://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
   <script type="text/sql" id="sql">
 CREATE TABLE Nodes (
-    id INT PRIMARY KEY,
-    txt TEXT,
-    yes INT FOREIGN KEY REFERENCES(Id),
-    no INT FOREIGN KEY REFERENCES(Id)
+    Id INT PRIMARY KEY,
+    Txt TEXT,
+    Yes INT FOREIGN KEY REFERENCES(Id),
+    No INT FOREIGN KEY REFERENCES(Id)
 );
 
-INSERT INTO Nodes (id, txt, yes, no) VALUES (0, "Does it fly", 1, 2);
-INSERT INTO Nodes (id, txt) VALUES (1, "Pelican");
-INSERT INTO Nodes (id, txt) VALUES (2, "Water buffalo");
+INSERT INTO Nodes (Id, Txt, Yes, No) VALUES (0, "Does it fly", 1, 2);
+INSERT INTO Nodes (Id, Txt) VALUES (1, "Pelican");
+INSERT INTO Nodes (Id, Txt) VALUES (2, "Water buffalo");
 
   </script>
 <script type="text/javascript">
@@ -43,8 +43,8 @@ var root;// = new Question("Does it fly");
 
 function loadFromDatabase() {
   // Root - nothing points to it.
-  var sql = alasql('SELECT * FROM Nodes WHERE id NOT IN ' +
-                 '(SELECT yes FROM Nodes UNION SELECT no FROM NODES)');
+  var sql = alasql('SELECT * FROM Nodes WHERE Id NOT IN ' +
+                 '(SELECT Yes FROM Nodes UNION SELECT No FROM Nodes)');
   root = new Question(sql.txt);
   root.sql = sql;
   var queue = [root];
@@ -53,7 +53,7 @@ function loadFromDatabase() {
     var node = queue.shift();
     for (var child in {'yes':'', 'no':''}) {
       if (node.sql[child]) {
-        sql = alasql('SELECT * FROM Nodes WHERE id = ?;', node.sql[child]);
+        sql = alasql('SELECT * FROM Nodes WHERE Id = ?;', node.sql[child]);
         var newNode = new Question(sql.txt);
         node.addChild(newNode, child == 'yes');
         queue.push(newNode);
