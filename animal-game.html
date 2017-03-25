@@ -22,8 +22,8 @@ function Question(text) {
 }
 
 var root = new Question("Does it fly");
-root.addChild("Water Buffalo", false);
-root.addChild("Pelican", true);
+root.addChild(new Question("Water Buffalo"), false);
+root.addChild(new Question("Pelican"), true);
 
 function say(text) {
   alert(text);
