@@ -1,5 +1,19 @@
 <head>
-<script>
+  <script src="http://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
+  <script type="text/sql" id="sql">
+CREATE TABLE Questions (
+    Id INT PRIMARY KEY,
+    Txt TEXT,
+    Yes INT FOREIGN KEY REFERENCES(Id),
+    No INT FOREIGN KEY REFERENCES(Id)
+);
+
+INSERT INTO Questions (Id, Txt, Yes, No) VALUES (0, "Does it fly", 1, 2);
+INSERT INTO Questions (Id, Txt) VALUES (1, "Pelican");
+INSERT INTO Questions (Id, Txt) VALUES (2, "Water buffalo");
+
+  </script>
+<script type="text/javascript">
 /** Node in the animal game binary tree. */
 function Question(text) {
   this.text = text;
@@ -19,6 +33,12 @@ function Question(text) {
       this.no = child;
     }
   };
+}
+
+var questions = alasql('SELECT * FROM Questions ORDER BY Id DESC;');
+var map = {};
+for (var i = 0; i < questions.length; ++i) {
+  map[questions[i].Id] = questions[i];
 }
 
 var root = new Question("Does it fly");
@@ -64,9 +84,6 @@ function playGame() {
     }
   }
 }
-
-
-
 </script>
 </head>
 <body>
