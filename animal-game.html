@@ -1,0 +1,32 @@
+<head>
+<script>
+/** Node in the animal game binary tree. */
+function Question(text) {
+  this.text = text;
+  this.yes = null;
+  this.no = null;
+  this.parent = null;
+  
+  this.isLeaf = function() {
+    return !this.yes && !this.no;
+  }
+  
+  this.addChild(child, yesAnswer) {
+    child.parent = this;
+    if (yesAnswer) {
+      this.yes = child;
+    } else {
+      this.no = child;
+    }
+  }
+}
+
+var root = new Question("Does it fly");
+
+
+
+</script>
+</head>
+<body>
+<h1>Animal game</h1>
+</body>
