@@ -9,16 +9,16 @@ function Question(text) {
   
   this.isLeaf = function() {
     return !this.yes && !this.no;
-  }
+  };
   
-  this.addChild(child, yesAnswer) {
+  this.addChild = function(child, yesAnswer) {
     child.parent = this;
     if (yesAnswer) {
       this.yes = child;
     } else {
       this.no = child;
     }
-  }
+  };
 }
 
 var root = new Question("Does it fly");
