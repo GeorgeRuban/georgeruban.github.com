@@ -4,11 +4,11 @@
 CREATE TABLE Nodes (
     Id INT PRIMARY KEY,
     Txt TEXT,
-    Yes INT FOREIGN KEY REFERENCES(Id),
-    No INT FOREIGN KEY REFERENCES(Id)
+    YesChild INT FOREIGN KEY REFERENCES Nodes(Id),
+    NoChild INT FOREIGN KEY REFERENCES Nodes(Id)
 );
 
-INSERT INTO Nodes (Id, Txt, Yes, No) VALUES (0, "Does it fly", 1, 2);
+INSERT INTO Nodes (Id, Txt, YesChild, NoChild) VALUES (0, "Does it fly", 1, 2);
 INSERT INTO Nodes (Id, Txt) VALUES (1, "Pelican");
 INSERT INTO Nodes (Id, Txt) VALUES (2, "Water buffalo");
 
@@ -51,11 +51,11 @@ function loadFromDatabase() {
 
   while(queue.length > 0) {
     var node = queue.shift();
-    for (var child in {'yes':'', 'no':''}) {
+    for (var child in {'YesChild':'', 'NoChild':''}) {
       if (node.sql[child]) {
         sql = alasql('SELECT * FROM Nodes WHERE Id = ?;', node.sql[child]);
         var newNode = new Question(sql.txt);
-        node.addChild(newNode, child == 'yes');
+        node.addChild(newNode, child == 'YesChild');
         queue.push(newNode);
       }
     }
