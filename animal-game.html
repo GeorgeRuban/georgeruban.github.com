@@ -92,7 +92,7 @@ function playGame() {
         var questionNode = new Node(question);
         var isYesChild = (node.parent.yes == node);
         node.parent.addChild(questionNode, isYesChild);
-        questionNode.addChild(animal, answer);
+        questionNode.addChild(animalNode, answer);
         questionNode.addChild(node, !answer);
       }
       break;
