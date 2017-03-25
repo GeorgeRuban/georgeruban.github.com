@@ -51,6 +51,7 @@ function loadFromDatabase() {
       if (node.sql[child]) {
         sql = alasql('SELECT * FROM Nodes WHERE id = ?;', node.sql[child])[0];
         var newNode = new Node(sql.txt);
+        newNode.sql = sql;
         node.addChild(newNode, child == 'yesChild');
         queue.push(newNode);
       }
