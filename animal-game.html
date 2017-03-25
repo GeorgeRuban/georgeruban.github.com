@@ -44,7 +44,7 @@ var root;// = new Question("Does it fly");
 function loadFromDatabase() {
   // Root - nothing points to it.
   var sql = alasql('SELECT * FROM Nodes WHERE Id NOT IN ' +
-                 '(SELECT YesChild FROM Nodes UNION SELECT NoChild FROM Nodes)');
+                 '(SELECT YesChild FROM Nodes UNION SELECT NoChild FROM Nodes)')[0];
   root = new Question(sql.txt);
   root.sql = sql;
   var queue = [root];
