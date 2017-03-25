@@ -8,9 +8,9 @@ CREATE TABLE Nodes (
     NoChild INT FOREIGN KEY REFERENCES Nodes(Id)
 );
 
-INSERT INTO Nodes (Id, Txt, YesChild, NoChild) VALUES (0, "Does it fly", 1, 2);
 INSERT INTO Nodes (Id, Txt) VALUES (1, "Pelican");
 INSERT INTO Nodes (Id, Txt) VALUES (2, "Water buffalo");
+INSERT INTO Nodes (Id, Txt, YesChild, NoChild) VALUES (0, "Does it fly", 1, 2);
 
   </script>
 <script type="text/javascript">
@@ -61,7 +61,8 @@ function loadFromDatabase() {
     }
   }
 }
-  
+
+alasql('SOURCE "#sql"');
 loadFromDatabase();
   
   
