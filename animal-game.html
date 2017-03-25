@@ -22,6 +22,48 @@ function Question(text) {
 }
 
 var root = new Question("Does it fly");
+root.addChild("Water Buffalo", false);
+root.addChild("Pelican", true);
+
+function say(text) {
+  alert(text);
+}
+  
+function ask(text) {
+  return confirm(text + "?");
+}
+  
+function askInput(text) {
+  return prompt(text + "?");
+}
+  
+function playGame() {
+  var q = root;
+  
+  while (true) {
+    if (q.isLeaf()) {
+      var a = ask("Is it a " + q.text);
+      if (a) {
+        say("Hurrah!");
+      } else {
+        var animal = askInput("Whoops. What animal were you thinking of");
+        var newQuestion = askInput("What would be a yes/no question that would differentiate between a " +
+                                   animal + " and a " + q.text);
+        a = ask("What would be the answer to '" + newQuestion + "' for a " + animal);
+        animal = new Question(animal);
+        newQuestion = new Question(newQuestion);
+        qa = (q.parent.yes == q);
+        q.parent.addChild(newQuestion, qa);
+        newQuestion.addChild(animal, a);
+        newQuestion.addChild(q, !a);
+      }
+      break;
+    } else {
+      var a = ask(q.text);
+      q = a ? q.yes : q.no;
+    }
+  }
+}
 
 
 
@@ -29,4 +71,5 @@ var root = new Question("Does it fly");
 </head>
 <body>
 <h1>Animal game</h1>
+  <button onClick="playGame()">Play the Animal guessing game</button>
 </body>
