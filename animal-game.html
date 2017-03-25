@@ -2,10 +2,10 @@
   <script src="https://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
   <script type="text/sql" id="sql">
 CREATE TABLE Nodes (
-    Id INT PRIMARY KEY,
-    Txt TEXT,
-    YesChild INT FOREIGN KEY REFERENCES Nodes(Id),
-    NoChild INT FOREIGN KEY REFERENCES Nodes(Id)
+    id INT PRIMARY KEY,
+    txt TEXT,
+    yesChild INT FOREIGN KEY REFERENCES Nodes(Id),
+    noChild INT FOREIGN KEY REFERENCES Nodes(Id)
 );
 
 INSERT INTO Nodes (Id, Txt) VALUES (1, "Pelican");
@@ -15,7 +15,7 @@ INSERT INTO Nodes (Id, Txt, YesChild, NoChild) VALUES (0, "Does it fly", 1, 2);
   </script>
 <script type="text/javascript">
 /** Node in the animal game binary tree. */
-function Question(text) {
+function Node(text) {
   this.text = text;
   this.yes = null;
   this.no = null;
@@ -35,27 +35,23 @@ function Question(text) {
   };
 }
 
-
-
-var root;// = new Question("Does it fly");
-//root.addChild(new Question("Water Buffalo"), false);
-//root.addChild(new Question("Pelican"), true);
+var root;
 
 function loadFromDatabase() {
   // Root - nothing points to it.
   var sql = alasql('SELECT * FROM Nodes WHERE Id NOT IN ' +
                  '(SELECT YesChild FROM Nodes UNION SELECT NoChild FROM Nodes)')[0];
-  root = new Question(sql.txt);
+  root = new Node(sql.txt);
   root.sql = sql;
   var queue = [root];
 
   while(queue.length > 0) {
     var node = queue.shift();
-    for (var child in {'YesChild':'', 'NoChild':''}) {
+    for (var child in {'yesChild':'', 'noChild':''}) {
       if (node.sql[child]) {
-        sql = alasql('SELECT * FROM Nodes WHERE Id = ?;', node.sql[child]);
-        var newNode = new Question(sql.txt);
-        node.addChild(newNode, child == 'YesChild');
+        sql = alasql('SELECT * FROM Nodes WHERE Id = ?;', node.sql[child])[0];
+        var newNode = new Node(sql.txt);
+        node.addChild(newNode, child == 'yesChild');
         queue.push(newNode);
       }
     }
@@ -79,29 +75,29 @@ function askInput(text) {
 }
   
 function playGame() {
-  var q = root;
+  var node = root;
   
   while (true) {
-    if (q.isLeaf()) {
-      var a = ask("Is it a " + q.text);
-      if (a) {
+    if (node.isLeaf()) {
+      var answer = ask("Is it a " + node.text);
+      if (answer) {
         say("Hurrah!");
       } else {
         var animal = askInput("Whoops. What animal were you thinking of");
-        var newQuestion = askInput("What would be a yes/no question that would differentiate between a " +
-                                   animal + " and a " + q.text);
-        a = ask("What would be the answer to '" + newQuestion + "' for a " + animal);
-        animal = new Question(animal);
-        newQuestion = new Question(newQuestion);
-        qa = (q.parent.yes == q);
-        q.parent.addChild(newQuestion, qa);
-        newQuestion.addChild(animal, a);
-        newQuestion.addChild(q, !a);
+        var question = askInput("What would be a yes/no question that would differentiate between a " +
+                                   animal + " and a " + node.text);
+        answer = ask("What would be the answer to '" + question + "' for a " + animal);
+        var animalNode = new Node(animal);
+        var questionNode = new Node(question);
+        var isYesChild = (node.parent.yes == node);
+        node.parent.addChild(questionNode, isYesChild);
+        questionNode.addChild(animal, answer);
+        questionNode.addChild(node, !answer);
       }
       break;
     } else {
-      var a = ask(q.text);
-      q = a ? q.yes : q.no;
+      var answer = ask(node.text);
+      node = answer ? node.yes : node.no;
     }
   }
 }
