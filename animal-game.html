@@ -1,16 +1,16 @@
 <head>
   <script src="http://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
   <script type="text/sql" id="sql">
-CREATE TABLE Questions (
-    Id INT PRIMARY KEY,
-    Txt TEXT,
-    Yes INT FOREIGN KEY REFERENCES(Id),
-    No INT FOREIGN KEY REFERENCES(Id)
+CREATE TABLE Nodes (
+    id INT PRIMARY KEY,
+    txt TEXT,
+    yes INT FOREIGN KEY REFERENCES(Id),
+    no INT FOREIGN KEY REFERENCES(Id)
 );
 
-INSERT INTO Questions (Id, Txt, Yes, No) VALUES (0, "Does it fly", 1, 2);
-INSERT INTO Questions (Id, Txt) VALUES (1, "Pelican");
-INSERT INTO Questions (Id, Txt) VALUES (2, "Water buffalo");
+INSERT INTO Nodes (id, txt, yes, no) VALUES (0, "Does it fly", 1, 2);
+INSERT INTO Nodes (id, txt) VALUES (1, "Pelican");
+INSERT INTO Nodes (id, txt) VALUES (2, "Water buffalo");
 
   </script>
 <script type="text/javascript">
@@ -35,16 +35,34 @@ function Question(text) {
   };
 }
 
-var questions = alasql('SELECT * FROM Questions ORDER BY Id DESC;');
-var map = {};
-for (var i = 0; i < questions.length; ++i) {
-  map[questions[i].Id] = questions[i];
+
+
+var root;// = new Question("Does it fly");
+//root.addChild(new Question("Water Buffalo"), false);
+//root.addChild(new Question("Pelican"), true);
+
+function loadFromDatabase() {
+  // Root - nothing points to it.
+  var sql = alasql('SELECT * FROM Nodes WHERE id NOT IN ' +
+                 '(SELECT yes FROM Nodes UNION SELECT no FROM NODES)');
+  root = new Question(sql.txt);
+  root.sql = sql;
+  var queue = [root];
+
+  while(queue.length > 0) {
+    var node = queue.shift();
+    for (var child in {'yes':'', 'no':''}) {
+      if (node.sql[child]) {
+        sql = alasql('SELECT * FROM Nodes WHERE id = ?;', node.sql[child]);
+        var newNode = new Question(sql.txt);
+        node.addChild(newNode, child == 'yes');
+        queue.push(newNode);
+      }
+    }
+  }
 }
-
-var root = new Question("Does it fly");
-root.addChild(new Question("Water Buffalo"), false);
-root.addChild(new Question("Pelican"), true);
-
+  
+  
 function say(text) {
   alert(text);
 }
