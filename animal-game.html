@@ -8,9 +8,9 @@ CREATE TABLE Nodes (
     noChild INT FOREIGN KEY REFERENCES Nodes(Id)
 );
 
-INSERT INTO Nodes (Id, Txt) VALUES (1, "Pelican");
-INSERT INTO Nodes (Id, Txt) VALUES (2, "Water buffalo");
-INSERT INTO Nodes (Id, Txt, YesChild, NoChild) VALUES (0, "Does it fly", 1, 2);
+INSERT INTO Nodes (id, txt) VALUES (1, "Pelican");
+INSERT INTO Nodes (id, txt) VALUES (2, "Water buffalo");
+INSERT INTO Nodes (id, txt, yesChild, noChild) VALUES (0, "Does it fly", 1, 2);
 
   </script>
 <script type="text/javascript">
@@ -39,8 +39,8 @@ var root;
 
 function loadFromDatabase() {
   // Root - nothing points to it.
-  var sql = alasql('SELECT * FROM Nodes WHERE Id NOT IN ' +
-                 '(SELECT YesChild FROM Nodes UNION SELECT NoChild FROM Nodes)')[0];
+  var sql = alasql('SELECT * FROM Nodes WHERE id NOT IN ' +
+                 '(SELECT yesChild FROM Nodes UNION SELECT noChild FROM Nodes)')[0];
   root = new Node(sql.txt);
   root.sql = sql;
   var queue = [root];
@@ -49,7 +49,7 @@ function loadFromDatabase() {
     var node = queue.shift();
     for (var child in {'yesChild':'', 'noChild':''}) {
       if (node.sql[child]) {
-        sql = alasql('SELECT * FROM Nodes WHERE Id = ?;', node.sql[child])[0];
+        sql = alasql('SELECT * FROM Nodes WHERE id = ?;', node.sql[child])[0];
         var newNode = new Node(sql.txt);
         node.addChild(newNode, child == 'yesChild');
         queue.push(newNode);
