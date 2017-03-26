@@ -5,6 +5,8 @@
 CREATE localStorage DATABASE IF NOT EXISTS db;
 ATTACH localStorage DATABASE db;
 USE db;
+SET AUTOCOMMIT OFF;
+BEGIN TRANSACTION;
 
 /* "no" is apparently an AlaSql keyword, so need to use "noChild". */
 CREATE TABLE IF NOT EXISTS Nodes (
@@ -22,6 +24,7 @@ IF NOT EXISTS (SELECT * FROM Nodes WHERE id = 2)
 IF NOT EXISTS (SELECT * FROM Nodes WHERE id = 0)   
   INSERT INTO Nodes (id, txt, yesChild, noChild) VALUES (0, "Does it fly", 1, 2);
 
+COMMIT TRANSACTION;
   </script>
 <script type="text/javascript">
 
