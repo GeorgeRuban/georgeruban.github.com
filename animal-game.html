@@ -100,7 +100,7 @@ function ask(text) {
   
 function askInput(text) {
   var answer = prompt(text + '?');
-  if (answer.charAt(answer.length() - 1) == '?') {
+  if (answer && answer.charAt(answer.length - 1) == '?') {
     answer = answer.substring(0, answer.length() - 1);
   }
   return answer;
@@ -123,7 +123,7 @@ function playGame() {
       }
       break;
     } else {
-      var answer = ask(node.text);
+      var answer = ask(node.txt);
       node = getNode(answer ? node.yesChild : node.noChild);
     }
   }
