@@ -1,16 +1,23 @@
 <head>
   <script src="https://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
   <script type="text/sql" id="sql">
-CREATE TABLE Nodes (
+CREATE localStorage DATABASE IF NOT EXISTS db;
+ATTACH localStorage DATABASE db;
+USE db;
+  
+CREATE TABLE IF NOT EXISTS Nodes (
     id INT PRIMARY KEY,
     txt TEXT,
     yesChild INT FOREIGN KEY REFERENCES Nodes(Id),
     noChild INT FOREIGN KEY REFERENCES Nodes(Id)
 );
 
-INSERT INTO Nodes (id, txt) VALUES (1, "Pelican");
-INSERT INTO Nodes (id, txt) VALUES (2, "Water buffalo");
-INSERT INTO Nodes (id, txt, yesChild, noChild) VALUES (0, "Does it fly", 1, 2);
+IF NOT EXISTS (SELECT * FROM Nodes LIMIT 1)
+BEGIN
+  INSERT INTO Nodes (id, txt) VALUES (1, "Pelican");
+  INSERT INTO Nodes (id, txt) VALUES (2, "Water buffalo");
+  INSERT INTO Nodes (id, txt, yesChild, noChild) VALUES (0, "Does it fly", 1, 2);
+END;
 
   </script>
 <script type="text/javascript">
