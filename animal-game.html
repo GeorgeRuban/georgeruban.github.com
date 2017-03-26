@@ -71,7 +71,7 @@ function newNode(txt) {
 function isYesChild(parentId, childId) {
   return !!alasql(
     'SELECT COUNT(*) AS y FROM Nodes WHERE yesChild = ? AND id = ?;',
-    [leafId, parentId])[0].y;
+    [childId, parentId])[0].y;
 }
   
 /** In the place of the specified existing leaf, inserts a question,
