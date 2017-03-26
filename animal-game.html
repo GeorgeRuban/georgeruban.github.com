@@ -101,7 +101,7 @@ function ask(text) {
 function askInput(text) {
   var answer = prompt(text + '?');
   if (answer && answer.charAt(answer.length - 1) == '?') {
-    answer = answer.substring(0, answer.length() - 1);
+    answer = answer.substring(0, answer.length - 1);
   }
   return answer;
 }
