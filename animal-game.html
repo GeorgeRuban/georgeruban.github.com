@@ -12,12 +12,13 @@ CREATE TABLE IF NOT EXISTS Nodes (
     noChild INT FOREIGN KEY REFERENCES Nodes(Id)
 );
 
-IF NOT EXISTS (SELECT * FROM Nodes LIMIT 1)
-BEGIN
+IF NOT EXISTS (SELECT * FROM Nodes WHERE id = 1)   
   INSERT INTO Nodes (id, txt) VALUES (1, "Pelican");
+IF NOT EXISTS (SELECT * FROM Nodes WHERE id = 2)   
   INSERT INTO Nodes (id, txt) VALUES (2, "Water buffalo");
+IF NOT EXISTS (SELECT * FROM Nodes WHERE id = 0)   
   INSERT INTO Nodes (id, txt, yesChild, noChild) VALUES (0, "Does it fly", 1, 2);
-END;
+
 
   </script>
 <script type="text/javascript">
