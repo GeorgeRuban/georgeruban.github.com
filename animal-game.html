@@ -1,17 +1,20 @@
 <head>
   <script src="https://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
   <script type="text/sql" id="sql">
+/* Use localStorage, to persist across sessions on same computer. */
 CREATE localStorage DATABASE IF NOT EXISTS db;
 ATTACH localStorage DATABASE db;
 USE db;
-  
+
+/* "no" is apparently an AlaSql keyword, so need to use "noChild". */
 CREATE TABLE IF NOT EXISTS Nodes (
     id INT PRIMARY KEY,
     txt TEXT,
-    yesChild INT FOREIGN KEY REFERENCES Nodes(Id),
-    noChild INT FOREIGN KEY REFERENCES Nodes(Id)
+    yesChild INT UNIQUE FOREIGN KEY REFERENCES Nodes(Id),
+    noChild INT UNIQUE FOREIGN KEY REFERENCES Nodes(Id)
 );
 
+/* Initialize the Nodes table. BEGIN/END seem to have issues. */
 IF NOT EXISTS (SELECT * FROM Nodes WHERE id = 1)   
   INSERT INTO Nodes (id, txt) VALUES (1, "Pelican");
 IF NOT EXISTS (SELECT * FROM Nodes WHERE id = 2)   
@@ -19,57 +22,73 @@ IF NOT EXISTS (SELECT * FROM Nodes WHERE id = 2)
 IF NOT EXISTS (SELECT * FROM Nodes WHERE id = 0)   
   INSERT INTO Nodes (id, txt, yesChild, noChild) VALUES (0, "Does it fly", 1, 2);
 
-
   </script>
 <script type="text/javascript">
-/** Node in the animal game binary tree. */
-function Node(text) {
-  this.text = text;
-  this.yes = null;
-  this.no = null;
-  this.parent = null;
-  
-  this.isLeaf = function() {
-    return !this.yes && !this.no;
-  };
-  
-  this.addChild = function(child, yesAnswer) {
-    child.parent = this;
-    if (yesAnswer) {
-      this.yes = child;
-    } else {
-      this.no = child;
-    }
-  };
-}
-
-var root;
-
-function loadFromDatabase() {
-  // Root - nothing points to it.
-  var sql = alasql('SELECT * FROM Nodes WHERE id NOT IN ' +
-                 '(SELECT yesChild FROM Nodes UNION SELECT noChild FROM Nodes)')[0];
-  root = new Node(sql.txt);
-  root.sql = sql;
-  var queue = [root];
-
-  while(queue.length > 0) {
-    var node = queue.shift();
-    for (var child in {'yesChild':'', 'noChild':''}) {
-      if (node.sql[child]) {
-        sql = alasql('SELECT * FROM Nodes WHERE id = ?;', node.sql[child])[0];
-        var newNode = new Node(sql.txt);
-        newNode.sql = sql;
-        node.addChild(newNode, child == 'yesChild');
-        queue.push(newNode);
-      }
-    }
-  }
-}
 
 alasql('SOURCE "#sql"');
-loadFromDatabase();
+
+/* Does everything by SQL, no JavaScript storage. */
   
+/* Nothing points to the root. */
+function getRoot() {
+  return alasql(
+    'SELECT * from Nodes WHERE id NOT IN '
+    '(SELECT yesChild FROM Nodes UNION SELECT noChild FROM Nodes);')[0];
+}
+
+function getNode(id) {
+  return alasql('SELECT * from Nodes WHERE id = ?;', [id])[0];
+}
+
+function isLeaf(node) {
+  return node.yesChild == null && node.noChild == null;
+}
+  
+function getParentId(id) {
+  return alasql('SELECT id FROM Nodes WHERE noChild = ? OR yesChild = ?;',
+                [id, id])[0].id;
+}
+
+function getMaxId() {
+  return alasql('SELECT MAX(id) AS max FROM Nodes;')[0].max;
+}
+
+/** Adds child to parent as yesChild or noChild depending on answer. */
+function addChild(parentId, childId, answer) {
+  alasql('UPDATE Nodes SET ' + (answer ? 'yesChild' : 'noChild') + 
+         ' = ? WHERE id = ?;', [childId, parentId]);
+}
+
+/** Creates a new Node with given txt, returns its id. */
+function newNode(txt) {
+  // Doing AUTOINCREMENT manually; requires this be in a transaction.
+  var id = getMaxId() + 1;
+  alasql('INSERT INTO Nodes (id, txt) VALUES (?, ?);', [id, txt]);
+  return id;
+}
+
+/** Returns whether the input child is the yesChild of the input parent. */
+function isYesChild(parentId, childId) {
+  return !!alasql(
+    'SELECT COUNT(*) AS y FROM Nodes WHERE yesChild = ? AND id = ?;',
+    [leafId, parentId])[0].y;
+}
+  
+/** In the place of the specified existing leaf, inserts a question,
+  * with the new animal as the child when the answer is answer,
+  * and the previous leaf as the other child. Uses an SQL transaction
+  * so as not to clash with other database writes. */
+function insertAnimalQuestion(leafId, animal, question, answer) {
+  alasql('BEGIN TRANSACTION;');
+  var parentId = getParentId(leafId);
+  var questionId = newNode(question);
+  var animalId = newNode(animal);
+  var yesChild = isYesChild(parentId, leafId);
+  addChild(parentId, questionId, yesChild);
+  addChild(questionId, animalId, answer);
+  addChild(questionId, leafId, !answer);
+  alasql('COMMIT TRANSACTION;');
+}
   
 function say(text) {
   alert(text);
@@ -84,29 +103,24 @@ function askInput(text) {
 }
   
 function playGame() {
-  var node = root;
+  var node = getRoot();
   
   while (true) {
-    if (node.isLeaf()) {
-      var answer = ask("Is it a " + node.text);
+    if (isLeaf(node) {
+      var answer = ask("Is it a " + node.txt);
       if (answer) {
         say("Hurrah!");
       } else {
         var animal = askInput("Whoops. What animal were you thinking of");
         var question = askInput("What would be a yes/no question that would differentiate between a " +
-                                   animal + " and a " + node.text);
+                                   animal + " and a " + node.txt);
         answer = ask("What would be the answer to '" + question + "' for a " + animal);
-        var animalNode = new Node(animal);
-        var questionNode = new Node(question);
-        var isYesChild = (node.parent.yes == node);
-        node.parent.addChild(questionNode, isYesChild);
-        questionNode.addChild(animalNode, answer);
-        questionNode.addChild(node, !answer);
+        insertAnimalQuestion(node.id, animal, question, answer);
       }
       break;
     } else {
       var answer = ask(node.text);
-      node = answer ? node.yes : node.no;
+      node = getNode(answer ? node.yesChild : node.noChild);
     }
   }
 }
