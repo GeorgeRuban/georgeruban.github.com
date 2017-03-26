@@ -32,7 +32,7 @@ alasql('SOURCE "#sql"');
 /* Nothing points to the root. */
 function getRoot() {
   return alasql(
-    'SELECT * from Nodes WHERE id NOT IN '
+    'SELECT * from Nodes WHERE id NOT IN ' +
     '(SELECT yesChild FROM Nodes UNION SELECT noChild FROM Nodes);')[0];
 }
 
@@ -95,11 +95,15 @@ function say(text) {
 }
   
 function ask(text) {
-  return confirm(text + "?");
+  return confirm(text + '?');
 }
   
 function askInput(text) {
-  return prompt(text + "?");
+  var answer = prompt(text + '?');
+  if (answer.charAt(answer.length() - 1) == '?') {
+    answer = answer.substring(0, answer.length() - 1);
+  }
+  return answer;
 }
   
 function playGame() {
@@ -107,14 +111,14 @@ function playGame() {
   
   while (true) {
     if (isLeaf(node) {
-      var answer = ask("Is it a " + node.txt);
+      var answer = ask('Is it a ' + node.txt);
       if (answer) {
-        say("Hurrah!");
+        say('Hurrah!');
       } else {
-        var animal = askInput("Whoops. What animal were you thinking of");
-        var question = askInput("What would be a yes/no question that would differentiate between a " +
-                                   animal + " and a " + node.txt);
-        answer = ask("What would be the answer to '" + question + "' for a " + animal);
+        var animal = askInput('Whoops. What animal were you thinking of');
+        var question = askInput('What would be a yes/no question that would differentiate between a ' +
+                                animal + ' and a ' + node.txt);
+        answer = ask('What would be the answer to "' + question + '" for a ' + animal);
         insertAnimalQuestion(node.id, animal, question, answer);
       }
       break;
