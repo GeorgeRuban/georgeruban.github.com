@@ -143,20 +143,25 @@ function playGame() {
 }
     
 .dialog input {
-  border: 1px solid #c5c5c5;
+  border: 1px solid #bbb;
   border-radius: 3px;
   width: 90%;
 }
 
+.dialog p {
+  margin: 1em;
+}
+    
 .buttonset {
   display: flex;
   justify-content: flex-end;
 }
 
 button {
-  border: 1px solid #c5c5c5;
+  border: 1px solid #bbb;
   border-radius: 3px;
-  padding: 1em;
+  margin: 1.5em;
+  padding: 0.5em 1em;
 }
     
   </style>
@@ -176,7 +181,7 @@ button {
   <button onClick="playGame()">Play the Animal guessing game</button>
   
   <div class="dialog" id="dialog" style="display:none">
-    <div id="txt">Question goes here.</div>
+    <p id="txt">Question goes here.</p>
     <input id="input">
     <div class="buttonset">
       <button id="ok" onclick="ok();">OK</button>
