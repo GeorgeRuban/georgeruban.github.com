@@ -21,10 +21,9 @@ IF NOT EXISTS (SELECT * FROM Nodes WHERE id = 2)
   INSERT INTO Nodes (id, txt) VALUES (2, "Water buffalo");
 IF NOT EXISTS (SELECT * FROM Nodes WHERE id = 0)   
   INSERT INTO Nodes (id, txt, yesChild, noChild) VALUES (0, "Does it fly", 1, 2);
-
-</script>
-<script type="text/javascript">
-
+  </script>
+  
+  <script type="text/javascript">
 alasql('SOURCE "#sql"');
 
 /* Does everything by SQL, no JavaScript storage. */
@@ -129,7 +128,38 @@ function playGame() {
     }
   }
 }
-</script>
+  </script>
+  <style>
+.dialog {
+  border: 1px solid #c5c5c5;
+  border-radius: 3px;
+  height: auto;
+  left: calc(50% - 150px);
+  padding: 1em;
+  position: absolute;
+  top: 100px;
+  width: 300px;
+  z-index: 10;
+}
+    
+.dialog input {
+  border: 1px solid #c5c5c5;
+  border-radius: 3px;
+  width: 90%;
+}
+
+.buttonset {
+  display: flex;
+  justify-content: flex-end;
+}
+
+button {
+  border: 1px solid #c5c5c5;
+  border-radius: 3px;
+  padding: 1em;
+}
+    
+  </style>
 </head>
 <body>
 <h1>Animal game</h1>
@@ -144,4 +174,15 @@ function playGame() {
     <li>The more games you play, the more questions, and animals, the game will learn.
   </ol>
   <button onClick="playGame()">Play the Animal guessing game</button>
+  
+  <div class="dialog" id="dialog" style="display:none">
+    <div id="txt">Question goes here.</div>
+    <input id="input">
+    <div class="buttonset">
+      <button id="ok" onclick="ok();">OK</button>
+      <button id="yes" onclick="yes();">Yes</button>
+      <button id="no" onclick="no();">No</button>
+    </div>
+  </div>
+  
 </body>
