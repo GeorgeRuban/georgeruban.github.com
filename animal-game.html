@@ -28,7 +28,7 @@ alasql('SOURCE "#sql"');
 
 /* Does everything by SQL, no JavaScript storage. */
   
-/* Nothing points to the root. */
+/** The root is a Node that is not a child of anything. */
 function getRoot() {
   return alasql(
     'SELECT * from Nodes WHERE id NOT IN ' +
@@ -90,60 +90,17 @@ function insertAnimalQuestion(leafId, animal, question, answer) {
   alasql('COMMIT TRANSACTION;');
 }
     
-function showElement(selector) {
-  document.querySelector(selector).style.display = '';
-}
-
-function hideElement(selector) {
-  document.querySelector(selector).style.display = 'none';
-}
-
-function ok() {
-  hideElement('#dialog');
-}
-
-function yes() {
-  hideElement('#dialog');
-}
-
-function no() {
-  hideElement('#dialog');
-}
-  
-function setText(text) {
-  document.querySelector('#text').textContent = text;
-}
-    
 function say(text) {
-  /* setText(text);
-  hideElement('#yes');
-  hideElement('#no');
-  hideElement('#input');
-  showElement('#ok');
-  showElement('#dialog'); */
   alert(text);
 }
   
 function ask(text) {
   text = text + '? (OK for Yes, Cancel for No)';
-  /* setText(text);
-  showElement('#yes');
-  showElement('#no');
-  hideElement('#input');
-  hideElement('#ok');
-  showElement('#dialog'); */
   return confirm(text);
 }
   
 function askInput(text) {
-  text = text + '?  (OK when done, Cancel to quit)';
-  /* setText(text);
-  hideElement('#yes');
-  hideElement('#no');
-  showElement('#input');
-  showElement('#ok');
-  showElement('#dialog'); */
-  
+  text = text + '?  (OK when done, Cancel to quit)';  
   var answer = prompt(text);
   if (answer && answer.charAt(answer.length - 1) == '?') {
     answer = answer.substring(0, answer.length - 1);
@@ -180,81 +137,19 @@ function playGame() {
   }
 }
   </script>
-  <style>
-.dialog {
-  background-color: lightyellow;
-  border: 2px solid #bbb;
-  border-radius: 3px;
-  height: auto;
-  left: calc(50% - 150px);
-  padding: 0.5em 1em;
-  position: absolute;
-  top: 100px;
-  width: 300px;
-  z-index: 10;
-}
-    
-.dialog input {
-  border: 1px solid #bbb;
-  border-radius: 3px;
-  height: 2em;
-  padding: 1em;
-  width: 100%;
-}
-
-.dialog p {
-  margin: 1em;
-}
-
-.dialog #close {
-  height: 1.5em;
-  margin: 0.5em;
-  padding: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 1.5em;
-}
-    
-.buttonset {
-  display: flex;
-  justify-content: flex-end;
-}
-
-button {
-  border: 1px solid #bbb;
-  border-radius: 3px;
-  font-size: 12px;
-  font-weight: 600;
-  margin: 1em 1.5em;
-  padding: 0.5em 1em;
-}
-    
-  </style>
 </head>
 <body>
 <h1>Animal game</h1>
   This is a learning game; the computer learns from you.
+  The state is stored in localStorage as SQL.
   To play:
   <ol>
     <li>Think of a type of animal.
-    <li>Press the "Play" button.
+    <li>Press the "Play ..." button, below.
     <li>The game will ask you a yes/no question about the animal. Answer it (yes/OK; no/Cancel).
     <li>Eventually the game will guess what the animal is. If it guesses wrong, it will ask you to 
     teach it another question to ask in the next game.
     <li>The more games you play, the more questions, and animals, the game will learn.
   </ol>
   <button onClick="playGame()">Play the Animal guessing game</button>
-  
-  <div class="dialog" id="dialog" style="display:none">
-    <button id="close" onclick="close();">&#10006;</button>
-    <p id="text">Question goes here.</p>
-    <input id="input">
-    <div class="buttonset">
-      <button id="ok" onclick="ok();">OK</button>
-      <button id="yes" onclick="yes();">Yes</button>
-      <button id="no" onclick="no();">No</button>
-    </div>
-  </div>
-  
 </body>
