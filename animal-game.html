@@ -115,33 +115,34 @@ function setText(text) {
 }
     
 function say(text) {
-  setText(text);
+  /* setText(text);
   hideElement('#yes');
   hideElement('#no');
   hideElement('#input');
   showElement('#ok');
-  showElement('#dialog');
+  showElement('#dialog'); */
   alert(text);
 }
   
 function ask(text) {
-  setText(text);
+  text = text + '? (OK for Yes, Cancel for No)';
+  /* setText(text);
   showElement('#yes');
   showElement('#no');
   hideElement('#input');
   hideElement('#ok');
-  showElement('#dialog');
-  return confirm(text + '?');
+  showElement('#dialog'); */
+  return confirm(text);
 }
   
 function askInput(text) {
-  text = text + '?';
-  setText(text);
+  text = text + '?  (OK when done, Cancel to quit)';
+  /* setText(text);
   hideElement('#yes');
   hideElement('#no');
   showElement('#input');
   showElement('#ok');
-  showElement('#dialog');
+  showElement('#dialog'); */
   
   var answer = prompt(text);
   if (answer && answer.charAt(answer.length - 1) == '?') {
@@ -160,8 +161,14 @@ function playGame() {
         say('Hurrah!');
       } else {
         var animal = askInput('Whoops. What animal were you thinking of');
+        if (!animal) {
+          break;
+        }
         var question = askInput('What would be a yes/no question that would differentiate between a ' +
                                 animal + ' and a ' + node.txt);
+        if (!question) {
+          break;
+        }
         answer = ask('What would be the answer to "' + question + '" for a ' + animal);
         insertAnimalQuestion(node.id, animal, question, answer);
       }
