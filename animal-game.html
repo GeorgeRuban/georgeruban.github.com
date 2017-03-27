@@ -89,17 +89,61 @@ function insertAnimalQuestion(leafId, animal, question, answer) {
   addChild(questionId, leafId, !answer);
   alasql('COMMIT TRANSACTION;');
 }
+    
+function showElement(selector) {
+  document.querySelector(selector).style.display = '';
+}
+
+function hideElement(selector) {
+  document.querySelector(selector).style.display = 'none';
+}
+
+function ok() {
+  hideElement('#dialog');
+}
+
+function yes() {
+  hideElement('#dialog');
+}
+
+function no() {
+  hideElement('#dialog');
+}
   
+function setText(text) {
+  document.querySelector('#text').textContent = text;
+}
+    
 function say(text) {
+  setText(text);
+  hideElement('#yes');
+  hideElement('#no');
+  hideElement('#input');
+  showElement('#ok');
+  showElement('#dialog');
   alert(text);
 }
   
 function ask(text) {
+  setText(text);
+  showElement('#yes');
+  showElement('#no');
+  hideElement('#input');
+  hideElement('#ok');
+  showElement('#dialog');
   return confirm(text + '?');
 }
   
 function askInput(text) {
-  var answer = prompt(text + '?');
+  text = text + '?';
+  setText(text);
+  hideElement('#yes');
+  hideElement('#no');
+  showElement('#input');
+  showElement('#ok');
+  showElement('#dialog');
+  
+  var answer = prompt(text);
   if (answer && answer.charAt(answer.length - 1) == '?') {
     answer = answer.substring(0, answer.length - 1);
   }
@@ -136,7 +180,7 @@ function playGame() {
   border-radius: 3px;
   height: auto;
   left: calc(50% - 150px);
-  padding: 1em;
+  padding: 0.5em 1em;
   position: absolute;
   top: 100px;
   width: 300px;
@@ -157,10 +201,11 @@ function playGame() {
 
 .dialog #close {
   height: 1.5em;
+  margin: 0.5em;
   padding: 0;
   position: absolute;
-  right: -1em;
-  top: -1em;
+  right: 0;
+  top: 0;
   width: 1.5em;
 }
     
@@ -172,7 +217,9 @@ function playGame() {
 button {
   border: 1px solid #bbb;
   border-radius: 3px;
-  margin: 1.5em;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 1em 1.5em;
   padding: 0.5em 1em;
 }
     
@@ -194,7 +241,7 @@ button {
   
   <div class="dialog" id="dialog" style="display:none">
     <button id="close" onclick="close();">&#10006;</button>
-    <p id="txt">Question goes here.</p>
+    <p id="text">Question goes here.</p>
     <input id="input">
     <div class="buttonset">
       <button id="ok" onclick="ok();">OK</button>
