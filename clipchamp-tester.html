@@ -15,6 +15,7 @@
   var options = {
       output: "gdrive",
       onUploadComplete: function(data) {
+        alert('Upload complete, data.url=' + data.url);
         $('body').append('<video controls src="'+data.url+'"></video>');
       }
   };
