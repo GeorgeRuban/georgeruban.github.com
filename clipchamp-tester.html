@@ -13,7 +13,10 @@
   var el = document.querySelector("#clipchamp-button");
   // For more customization options refer to our Documentation.
   var options = {
-      output: "gdrive"
+      output: "gdrive",
+      onUploadComplete: function(data) {
+        $('body').append('<video controls src="'+data.url+'"></video>');
+      }
   };
   clipchamp(el, options);
 </script>
