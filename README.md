@@ -1,2 +1,6 @@
 # George Ruban . GitHub . IO
-Personal web page on GitHub
+Live: https://georgeruban.github.io/
+
+Repository: https://github.com/GeorgeRuban/georgeruban.github.com
+
+Personal web page on GitHub with a few code samples.
